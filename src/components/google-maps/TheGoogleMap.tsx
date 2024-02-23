@@ -13,10 +13,9 @@ const center = { lat: 48.8584, lng: 2.2945 };
 export default function TheGoogleMap() {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [markerPosition, setMarkerPosition] = useState(center);
-  const [saveCoordinates, setSaveCoordinates] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
+  const [savedCoordinates, setSavedCoordinates] = useState<
+    { lat: number; lng: number; infoWindowContent: string }[]
+  >(JSON.parse(localStorage.getItem("savedCoordinates") || "[]"));
   const destinationRef = useRef<HTMLInputElement>(null);
   const [infoWindowContent, setInfoWindowContent] = useState<string>("");
   const [searchResult, setSearchResult] = useState("");
@@ -27,24 +26,32 @@ export default function TheGoogleMap() {
     libraries: ["places"],
   });
 
-  const onPlaceChanged = () => {
-    if (destinationRef.current && map) {
-      const place = destinationRef.current.value;
-      const geocoder = new google.maps.Geocoder();
+  const handlePlaceChanged = () => {
+    const place = destinationRef.current?.value;
+    if (place && isLoaded) {
+      const geocoder = new window.google.maps.Geocoder();
       geocoder.geocode({ address: place }, (results, status) => {
         if (status === "OK" && results && results.length > 0) {
           const location = results[0].geometry.location;
-          setMarkerPosition({ lat: location.lat(), lng: location.lng() });
-          map.setCenter(location);
+          const addressName = results[0].formatted_address; // Extract address name from geocoding results
+          setInfoWindowContent(addressName); // Set the content of the InfoWindowF
+          const newPosition = { lat: location.lat(), lng: location.lng(), infoWindowContent: addressName };
+          setMarkerPosition(newPosition);
+          map.panTo(location);
+          const newCoordinates = [...savedCoordinates, newPosition];
+          localStorage.setItem(
+            "savedCoordinates",
+            JSON.stringify(newCoordinates)
+          );
+          setSavedCoordinates(newCoordinates);
         }
       });
     }
   };
 
-  
   const onLoad = (autocomplete: any) => {
     setSearchResult(autocomplete);
-    autocomplete.addListener("place_changed", onPlaceChanged);
+    autocomplete.addListener("place_changed", handlePlaceChanged);
   };
 
   return (
@@ -53,8 +60,8 @@ export default function TheGoogleMap() {
         map={map}
         isLoaded={isLoaded}
         destinationRef={destinationRef}
-        onPlaceChanged={onPlaceChanged}
-        setSaveCoordinates={setSaveCoordinates}
+        onPlaceChanged={handlePlaceChanged}
+        setSaveCoordinates={setSavedCoordinates}
         onLoad={onLoad}
         setInfoWindowContent={setInfoWindowContent}
         setMarkerPosition={setMarkerPosition}

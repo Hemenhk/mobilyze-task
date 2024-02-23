@@ -13,7 +13,8 @@ type SearchBarProps = {
   setSaveCoordinates:Dispatch<SetStateAction<{
     lat: number;
     lng: number;
-} | null>>
+    infoWindowContent: string;
+}[]>>
   setMarkerPosition: Dispatch<
     SetStateAction<{
       lat: number;
@@ -25,39 +26,17 @@ type SearchBarProps = {
 export default function TheSearchBar({
   isLoaded,
   destinationRef,
-  map,
-  setSaveCoordinates,
-  setInfoWindowContent,
+  onPlaceChanged,
   onLoad,
-  setMarkerPosition,
 }: SearchBarProps) {
   if (!isLoaded) {
     return <p>Not loaded</p>;
   }
 
-  const handlePlaceChanged = () => {
-    const place = destinationRef.current?.value;
-    if (place && isLoaded) {
-      const geocoder = new window.google.maps.Geocoder();
-      geocoder.geocode({ address: place }, (results, status) => {
-        if (status === "OK" && results && results.length > 0) {
-          const location = results[0].geometry.location;
-          const newPosition = { lat: location.lat(), lng: location.lng() };
-          const addressName = results[0].formatted_address; // Extract address name from geocoding results
-          setInfoWindowContent(addressName); // Set the content of the InfoWindowF
-          setMarkerPosition(newPosition);
-          map.panTo(location);
-          localStorage.setItem("savedMarkers", JSON.stringify(newPosition))
-          setSaveCoordinates(newPosition)
-        }
-      });
-    }
-  };
-
   return (
-    <Card className="absolute top-0 p-6 z-[55]">
+    <Card className="absolute top-4 p-6 z-[55]">
       <CardContent>
-        <Autocomplete onLoad={onLoad} onPlaceChanged={handlePlaceChanged}>
+        <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
           <Input type="text" placeholder="Origin" ref={destinationRef} />
         </Autocomplete>
       </CardContent>
