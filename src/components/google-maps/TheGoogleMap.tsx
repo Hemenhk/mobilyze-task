@@ -1,5 +1,10 @@
 "use client";
-import { useJsApiLoader, GoogleMap, Marker } from "@react-google-maps/api";
+import {
+  useJsApiLoader,
+  GoogleMap,
+  Marker,
+  InfoWindowF,
+} from "@react-google-maps/api";
 import TheSearchBar from "./search-bar/TheSearchBar";
 import { useRef, useState } from "react";
 
@@ -8,7 +13,12 @@ const center = { lat: 48.8584, lng: 2.2945 };
 export default function TheGoogleMap() {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [markerPosition, setMarkerPosition] = useState(center);
+  const [saveCoordinates, setSaveCoordinates] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
   const destinationRef = useRef<HTMLInputElement>(null);
+  const [infoWindowContent, setInfoWindowContent] = useState<string>("");
   const [searchResult, setSearchResult] = useState("");
 
   const { isLoaded } = useJsApiLoader({
@@ -31,20 +41,22 @@ export default function TheGoogleMap() {
     }
   };
 
+  
   const onLoad = (autocomplete: any) => {
     setSearchResult(autocomplete);
     autocomplete.addListener("place_changed", onPlaceChanged);
   };
 
-  
   return (
     <>
       <TheSearchBar
-      map={map}
+        map={map}
         isLoaded={isLoaded}
         destinationRef={destinationRef}
         onPlaceChanged={onPlaceChanged}
+        setSaveCoordinates={setSaveCoordinates}
         onLoad={onLoad}
+        setInfoWindowContent={setInfoWindowContent}
         setMarkerPosition={setMarkerPosition}
       />
       {isLoaded ? (
@@ -56,6 +68,20 @@ export default function TheGoogleMap() {
           onLoad={(map) => setMap(map)}
         >
           <Marker position={markerPosition} />
+          <InfoWindowF
+            position={{
+              lat: markerPosition.lat,
+              lng: markerPosition.lng,
+            }}
+            options={{
+              pixelOffset: {
+                width: 0,
+                height: -40,
+              },
+            }}
+          >
+            <p>{infoWindowContent}</p>
+          </InfoWindowF>
         </GoogleMap>
       ) : (
         <div>Loading Google Maps...</div>

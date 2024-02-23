@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useRef } from "react";
+import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Autocomplete } from "@react-google-maps/api";
@@ -9,6 +9,11 @@ type SearchBarProps = {
   destinationRef: React.RefObject<HTMLInputElement>;
   onPlaceChanged: () => void;
   onLoad: (autocomplete: any) => void;
+  setInfoWindowContent: Dispatch<SetStateAction<string>>
+  setSaveCoordinates:Dispatch<SetStateAction<{
+    lat: number;
+    lng: number;
+} | null>>
   setMarkerPosition: Dispatch<
     SetStateAction<{
       lat: number;
@@ -21,7 +26,8 @@ export default function TheSearchBar({
   isLoaded,
   destinationRef,
   map,
-  onPlaceChanged,
+  setSaveCoordinates,
+  setInfoWindowContent,
   onLoad,
   setMarkerPosition,
 }: SearchBarProps) {
@@ -30,8 +36,6 @@ export default function TheSearchBar({
   }
 
   const handlePlaceChanged = () => {
-    console.log("handlePlaceChanged called");
-    console.log("isLoaded:", isLoaded);
     const place = destinationRef.current?.value;
     if (place && isLoaded) {
       const geocoder = new window.google.maps.Geocoder();
@@ -39,9 +43,12 @@ export default function TheSearchBar({
         if (status === "OK" && results && results.length > 0) {
           const location = results[0].geometry.location;
           const newPosition = { lat: location.lat(), lng: location.lng() };
-          console.log("New marker position:", newPosition);
+          const addressName = results[0].formatted_address; // Extract address name from geocoding results
+          setInfoWindowContent(addressName); // Set the content of the InfoWindowF
           setMarkerPosition(newPosition);
-          map.panTo({ lat: location.lat(), lng: location.lng(), animate: true }); // Smoothly move map to the new marker position
+          map.panTo(location);
+          localStorage.setItem("savedMarkers", JSON.stringify(newPosition))
+          setSaveCoordinates(newPosition)
         }
       });
     }
