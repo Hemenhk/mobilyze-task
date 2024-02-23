@@ -7,6 +7,7 @@ import {
 } from "@react-google-maps/api";
 import TheSearchBar from "./search-bar/TheSearchBar";
 import { useRef, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const center = { lat: 48.8584, lng: 2.2945 };
 
@@ -20,38 +21,64 @@ export default function TheGoogleMap() {
   const [infoWindowContent, setInfoWindowContent] = useState<string>("");
   const [searchResult, setSearchResult] = useState("");
 
+  const queryClient = useQueryClient();
+
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY as string,
     libraries: ["places"],
   });
 
-  const handlePlaceChanged = () => {
-    const place = destinationRef.current?.value;
-    if (place && isLoaded) {
-      const geocoder = new window.google.maps.Geocoder();
-      geocoder.geocode({ address: place }, (results, status) => {
-        if (status === "OK" && results && results.length > 0) {
-          const location = results[0].geometry.location;
-          const addressName = results[0].formatted_address; // Extract address name from geocoding results
-          setInfoWindowContent(addressName); // Set the content of the InfoWindowF
-          const newPosition = { lat: location.lat(), lng: location.lng(), infoWindowContent: addressName };
-          setMarkerPosition(newPosition);
-          map.panTo(location);
-          const newCoordinates = [...savedCoordinates, newPosition];
-          localStorage.setItem(
-            "savedCoordinates",
-            JSON.stringify(newCoordinates)
-          );
-          setSavedCoordinates(newCoordinates);
+  const { mutateAsync: handlePlaceChanged } = useMutation({
+    mutationFn: async () => {
+      return new Promise((resolve, reject) => {
+        const place = destinationRef.current?.value;
+        if (place && isLoaded) {
+          const geocoder = new window.google.maps.Geocoder();
+          geocoder.geocode({ address: place }, (results, status) => {
+            if (status === "OK" && results && results.length > 0) {
+              const location = results[0].geometry.location;
+              const addressName = results[0].formatted_address; 
+              setInfoWindowContent(addressName); // Set the content of the InfoWindowF
+              const newPosition = {
+                lat: location.lat(),
+                lng: location.lng(),
+                infoWindowContent: addressName,
+              };
+  
+              // Retrieve saved coordinates from local storage
+              const savedCoordinates = JSON.parse(localStorage.getItem("savedCoordinates") || "[]");
+  
+              // Update saved coordinates with new position
+              const newCoordinates = [...savedCoordinates, newPosition];
+              localStorage.setItem("savedCoordinates", JSON.stringify(newCoordinates));
+              setSavedCoordinates(newCoordinates);
+  
+              setMarkerPosition(newPosition);
+              map.panTo(location);
+              resolve(newCoordinates); // Resolve with the updated coordinates
+            } else {
+              reject(new Error("Geocode request failed"));
+            }
+          });
+        } else {
+          reject(new Error("Invalid place or map not loaded"));
         }
       });
-    }
-  };
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(["marker"], data);
+      queryClient.refetchQueries({ queryKey: ["marker"] });
+    },
+  });
 
   const onLoad = (autocomplete: any) => {
     setSearchResult(autocomplete);
-    autocomplete.addListener("place_changed", handlePlaceChanged);
+    autocomplete.addListener("place_changed", () => {
+      if (!isLoaded) {
+        handlePlaceChanged();
+      }
+    });
   };
 
   return (
