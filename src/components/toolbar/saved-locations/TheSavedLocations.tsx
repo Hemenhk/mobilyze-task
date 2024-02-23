@@ -11,16 +11,16 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const savedOnes = [
   { name: "France" },
-  { name: "France" },
-  { name: "France" },
-  { name: "France" },
+  { name: "Germany" },
+  { name: "Sweden" },
+  { name: "UK" },
 ];
 
 export default function TheSavedLocations() {
   const mappedSavedOnes = savedOnes.map((saved) => (
     <li key={saved.name}>
       <Card >
-        <CardContent className="flex items-center border-red-600">
+        <CardContent className="flex py-2 border-red-600">
           <p>{saved.name}</p>
         </CardContent>
       </Card>
