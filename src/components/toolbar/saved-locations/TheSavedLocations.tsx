@@ -10,10 +10,9 @@ import { IoTrashOutline } from "react-icons/io5";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-type SavedMarkerTypes = {
+export type SavedMarkerTypes = {
   lat: number;
   lng: number;
   infoWindowContent: string;
@@ -27,7 +26,7 @@ export default function TheSavedLocations() {
     queryFn: () => {
       const savedCoordinates = localStorage.getItem("savedCoordinates");
       if (savedCoordinates) {
-        return JSON.parse(savedCoordinates); // Return the parsed coordinates
+        return JSON.parse(savedCoordinates); 
       }
     },
   });
@@ -35,10 +34,10 @@ export default function TheSavedLocations() {
   const savedMarkers: SavedMarkerTypes[] = data || "[]";
   console.log("saved markers", savedMarkers);
 
-  const { mutateAsync: removeMarker } = useMutation({
+  const { mutateAsync: removeMarkerMutation } = useMutation({
     mutationFn: async (idx: number) => {
       return new Promise((resolve, reject) => {
-        const updatedMarkers = [...savedMarkers]; // Copy the savedMarkers array
+        const updatedMarkers = [...savedMarkers]; 
         if (idx >= 0 && idx < updatedMarkers.length) {
           updatedMarkers.splice(idx, 1);
           localStorage.setItem(
@@ -64,7 +63,7 @@ export default function TheSavedLocations() {
           <p>{saved.infoWindowContent}</p>
           <Button
             className="bg-transparent text-black hover:bg-transparent"
-            onClick={() => removeMarker(idx)}
+            onClick={() => removeMarkerMutation(idx)}
           >
             <IoTrashOutline />
           </Button>
@@ -75,7 +74,7 @@ export default function TheSavedLocations() {
   return (
     <Sheet>
       <SheetTrigger className="flex flex-col items-center gap-3">
-        <CiBookmark size={25} />
+        <CiBookmark size={25}/>
         <p className="text-xs font-medium">Saved</p>
       </SheetTrigger>
       <SheetContent side={"left"}>

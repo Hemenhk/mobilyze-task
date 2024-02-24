@@ -1,76 +1,18 @@
 "use client";
-import {
-  useJsApiLoader,
-  GoogleMap,
-  Marker,
-  InfoWindowF,
-} from "@react-google-maps/api";
+import { GoogleMap, Marker } from "@react-google-maps/api";
 import TheSearchBar from "./search-bar/TheSearchBar";
-import { useRef, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-const center = { lat: 48.8584, lng: 2.2945 };
+import { useGoogleMapsContext } from "@/app/context/googleMaps";
+import TheInfoWindow from "./info-window/TheInfoWindow";
 
 export default function TheGoogleMap() {
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [markerPosition, setMarkerPosition] = useState(center);
-  const [savedCoordinates, setSavedCoordinates] = useState<
-    { lat: number; lng: number; infoWindowContent: string }[]
-  >(JSON.parse(localStorage.getItem("savedCoordinates") || "[]"));
-  const destinationRef = useRef<HTMLInputElement>(null);
-  const [infoWindowContent, setInfoWindowContent] = useState<string>("");
-  const [searchResult, setSearchResult] = useState("");
-
-  const queryClient = useQueryClient();
-
-  const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY as string,
-    libraries: ["places"],
-  });
-
-  const { mutateAsync: handlePlaceChanged } = useMutation({
-    mutationFn: async () => {
-      return new Promise((resolve, reject) => {
-        const place = destinationRef.current?.value;
-        if (place && isLoaded) {
-          const geocoder = new window.google.maps.Geocoder();
-          geocoder.geocode({ address: place }, (results, status) => {
-            if (status === "OK" && results && results.length > 0) {
-              const location = results[0].geometry.location;
-              const addressName = results[0].formatted_address; 
-              setInfoWindowContent(addressName); // Set the content of the InfoWindowF
-              const newPosition = {
-                lat: location.lat(),
-                lng: location.lng(),
-                infoWindowContent: addressName,
-              };
-  
-              // Retrieve saved coordinates from local storage
-              const savedCoordinates = JSON.parse(localStorage.getItem("savedCoordinates") || "[]");
-  
-              // Update saved coordinates with new position
-              const newCoordinates = [...savedCoordinates, newPosition];
-              localStorage.setItem("savedCoordinates", JSON.stringify(newCoordinates));
-              setSavedCoordinates(newCoordinates);
-  
-              setMarkerPosition(newPosition);
-              map.panTo(location);
-              resolve(newCoordinates); // Resolve with the updated coordinates
-            } else {
-              reject(new Error("Geocode request failed"));
-            }
-          });
-        } else {
-          reject(new Error("Invalid place or map not loaded"));
-        }
-      });
-    },
-    onSuccess: (data) => {
-      queryClient.setQueryData(["marker"], data);
-      queryClient.refetchQueries({ queryKey: ["marker"] });
-    },
-  });
+  const {
+    handlePlaceChanged,
+    setSearchResult,
+    setMap,
+    isLoaded,
+    markerPosition,
+    infoWindowContent
+  } = useGoogleMapsContext();
 
   const onLoad = (autocomplete: any) => {
     setSearchResult(autocomplete);
@@ -81,41 +23,23 @@ export default function TheGoogleMap() {
     });
   };
 
+  const renderMarkerIfValidAddress = infoWindowContent ? (
+    <Marker position={markerPosition} />
+  ) : <></>
+
   return (
     <>
-      <TheSearchBar
-        map={map}
-        isLoaded={isLoaded}
-        destinationRef={destinationRef}
-        onPlaceChanged={handlePlaceChanged}
-        setSaveCoordinates={setSavedCoordinates}
-        onLoad={onLoad}
-        setInfoWindowContent={setInfoWindowContent}
-        setMarkerPosition={setMarkerPosition}
-      />
+      <TheSearchBar onLoad={onLoad} />
       {isLoaded ? (
         <GoogleMap
-          center={center}
+          center={markerPosition}
           mapContainerStyle={{ width: "100%", height: "100%" }}
           zoom={10}
           options={{ mapTypeControl: false }}
           onLoad={(map) => setMap(map)}
         >
-          <Marker position={markerPosition} />
-          <InfoWindowF
-            position={{
-              lat: markerPosition.lat,
-              lng: markerPosition.lng,
-            }}
-            options={{
-              pixelOffset: {
-                width: 0,
-                height: -40,
-              },
-            }}
-          >
-            <p>{infoWindowContent}</p>
-          </InfoWindowF>
+          {renderMarkerIfValidAddress}
+          <TheInfoWindow />
         </GoogleMap>
       ) : (
         <div>Loading Google Maps...</div>

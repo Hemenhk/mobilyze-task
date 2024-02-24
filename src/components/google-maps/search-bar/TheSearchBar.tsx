@@ -1,45 +1,37 @@
-import React, { Dispatch, SetStateAction, useRef, useState } from "react";
+import { Autocomplete } from "@react-google-maps/api";
+import { useGoogleMapsContext } from "@/app/context/googleMaps";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Autocomplete } from "@react-google-maps/api";
 
 type SearchBarProps = {
-  isLoaded: boolean;
-  map: google.maps.Map | null;
-  destinationRef: React.RefObject<HTMLInputElement>;
-  onPlaceChanged: () => void;
   onLoad: (autocomplete: any) => void;
-  setInfoWindowContent: Dispatch<SetStateAction<string>>
-  setSaveCoordinates:Dispatch<SetStateAction<{
-    lat: number;
-    lng: number;
-    infoWindowContent: string;
-}[]>>
-  setMarkerPosition: Dispatch<
-    SetStateAction<{
-      lat: number;
-      lng: number;
-    }>
-  >;
 };
 
-export default function TheSearchBar({
-  isLoaded,
-  destinationRef,
-  onPlaceChanged,
-  onLoad,
-}: SearchBarProps) {
+export default function TheSearchBar({ onLoad }: SearchBarProps) {
+  const { isLoaded, destinationRef, handlePlaceChanged } =
+    useGoogleMapsContext();
+
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: changePlaceMutation } = useMutation({
+    mutationFn: handlePlaceChanged,
+    onSuccess: (data) => {
+      queryClient.setQueryData(["marker"], data);
+      queryClient.refetchQueries({ queryKey: ["marker"] });
+    },
+  });
+
   if (!isLoaded) {
     return <p>Not loaded</p>;
   }
 
   return (
-    <Card className="absolute top-4 p-6 z-[55]">
-      <CardContent>
-        <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
-          <Input type="text" placeholder="Origin" ref={destinationRef} />
+    <Card className="absolute top-4 rounded-3xl z-[55] shadow-xl">
+        <Autocomplete onLoad={onLoad} onPlaceChanged={changePlaceMutation}>
+          <Input type="text" placeholder="Search for an address" ref={destinationRef} className="border-none rounded-3xl w-80"/>
         </Autocomplete>
-      </CardContent>
     </Card>
   );
 }

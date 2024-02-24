@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import ReactQueryProvider from "./context/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import GoogleMapsContextProvider from "./context/googleMaps";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,9 +20,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ReactQueryProvider>{children}
-        
-        <ReactQueryDevtools />
+        <ReactQueryProvider>
+          <GoogleMapsContextProvider>{children}</GoogleMapsContextProvider>
+          <ReactQueryDevtools />
         </ReactQueryProvider>
       </body>
     </html>
