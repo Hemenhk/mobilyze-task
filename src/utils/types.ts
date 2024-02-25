@@ -19,6 +19,8 @@ export type GoogleMapsContextType = {
   setMap: React.Dispatch<React.SetStateAction<google.maps.Map | null>>;
 
   setSearchResult: React.Dispatch<React.SetStateAction<string>>;
+  setInfoWindowContent: React.Dispatch<React.SetStateAction<string>>
   handlePlaceChanged: () => Promise<unknown>;
   handleSavePosition: (newPosition: any) => void;
+  setNewPosition: React.Dispatch<any>
 };

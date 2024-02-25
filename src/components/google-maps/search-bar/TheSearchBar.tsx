@@ -2,7 +2,7 @@ import { Autocomplete } from "@react-google-maps/api";
 import { useGoogleMapsContext } from "@/app/context/googleMaps";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 type SearchBarProps = {
@@ -29,9 +29,14 @@ export default function TheSearchBar({ onLoad }: SearchBarProps) {
 
   return (
     <Card className="absolute top-4 rounded-3xl z-[55] shadow-xl">
-        <Autocomplete onLoad={onLoad} onPlaceChanged={changePlaceMutation}>
-          <Input type="text" placeholder="Search for an address" ref={destinationRef} className="border-none rounded-3xl w-80"/>
-        </Autocomplete>
+      <Autocomplete onLoad={onLoad} onPlaceChanged={changePlaceMutation}>
+        <Input
+          type="text"
+          placeholder="Search for an address"
+          ref={destinationRef}
+          className="border-none rounded-3xl w-80"
+        />
+      </Autocomplete>
     </Card>
   );
 }

@@ -118,6 +118,8 @@ export default function GoogleMapsContextProvider({
         newPosition,
         setMap,
         setSearchResult,
+        setInfoWindowContent,
+        setNewPosition,
         handlePlaceChanged,
         handleSavePosition,
       }}

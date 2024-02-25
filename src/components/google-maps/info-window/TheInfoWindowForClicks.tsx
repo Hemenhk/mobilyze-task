@@ -4,18 +4,27 @@ import { InfoWindowF, Marker } from "@react-google-maps/api";
 import { useGoogleMapsContext } from "@/app/context/googleMaps";
 import TheSaveLocationButton from "./TheSaveLocationButton";
 
-export default function TheInfoWindow() {
-  const { infoWindowContent, markerPosition } = useGoogleMapsContext();
+type InfoWindowProps = {
+  clickedPosition: {
+    lat: number;
+    lng: number;
+  } | null;
+};
+
+export default function TheInfoWindowForClicks({
+  clickedPosition,
+}: InfoWindowProps) {
+  const { infoWindowContent } = useGoogleMapsContext();
 
   return (
     <>
       {infoWindowContent ? (
         <>
-          <Marker position={markerPosition} />
+          <Marker position={clickedPosition} />
           <InfoWindowF
             position={{
-              lat: markerPosition?.lat,
-              lng: markerPosition?.lng,
+              lat: clickedPosition?.lat,
+              lng: clickedPosition?.lng,
             }}
             options={{
               pixelOffset: {
