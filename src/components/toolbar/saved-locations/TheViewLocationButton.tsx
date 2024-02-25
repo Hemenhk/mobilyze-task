@@ -8,11 +8,12 @@ type ViewLocationProps = {
 };
 
 export default function TheViewLocationButton({ saved }: ViewLocationProps) {
-  const { setMarkerPosition, setInfoWindowContent } = useGoogleMapsContext();
+  const { setMarkerPosition, setInfoWindowContent, markerPosition } = useGoogleMapsContext();
 
   const handleViewLocation = (saved: SavedMarkerTypes) => {
     setMarkerPosition(saved);
     setInfoWindowContent(saved.infoWindowContent);
+    
   };
   return (
     <Button onClick={() => handleViewLocation(saved)}>View Location</Button>

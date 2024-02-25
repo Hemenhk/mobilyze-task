@@ -4,12 +4,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { OnLoadProps } from "@/utils/types";
 
-type SearchBarProps = {
-  onLoad: (autocomplete: any) => void;
-};
-
-export default function TheSearchBar({ onLoad }: SearchBarProps) {
+export default function TheSearchBar({ onLoad }: OnLoadProps) {
   const { isLoaded, destinationRef, handlePlaceChanged } =
     useGoogleMapsContext();
 
@@ -28,13 +25,13 @@ export default function TheSearchBar({ onLoad }: SearchBarProps) {
   }
 
   return (
-    <Card className="absolute top-4 rounded-3xl z-[55] shadow-xl">
+    <Card className="rounded-3xl shadow-xl">
       <Autocomplete onLoad={onLoad} onPlaceChanged={changePlaceMutation}>
         <Input
           type="text"
           placeholder="Search for an address"
           ref={destinationRef}
-          className="border-none rounded-3xl w-80"
+          className="border-none rounded-3xl w-64 md:w-80"
         />
       </Autocomplete>
     </Card>

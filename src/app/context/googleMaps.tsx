@@ -118,6 +118,7 @@ export default function GoogleMapsContextProvider({
   return (
     <GoogleMapsContext.Provider
       value={{
+        map,
         isLoaded,
         markerPosition,
         clickedPosition,

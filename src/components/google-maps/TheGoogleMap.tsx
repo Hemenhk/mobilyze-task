@@ -6,6 +6,8 @@ import { useGoogleMapsContext } from "@/app/context/googleMaps";
 import TheInfoWindow from "./info-window/TheInfoWindow";
 import TheInfoWindowForClicks from "./info-window/TheInfoWindowForClicks";
 import TheSearchBar from "./search-bar/TheSearchBar";
+import TheSavedLocations from "../toolbar/saved-locations/TheSavedLocations";
+import TheToolbar from "../toolbar/TheToolbar";
 
 export default function TheGoogleMap() {
   const {
@@ -56,7 +58,7 @@ export default function TheGoogleMap() {
 
   return (
     <>
-      <TheSearchBar onLoad={onLoad} />
+      <TheToolbar onLoad={onLoad} />
       {isLoaded ? (
         <GoogleMap
           center={markerPosition}

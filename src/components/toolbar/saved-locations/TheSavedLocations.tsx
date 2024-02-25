@@ -14,7 +14,12 @@ import TheRemoveSavedLocationButton from "./TheRemoveSavedLocationButton";
 import TheViewLocationButton from "./TheViewLocationButton";
 import { SavedMarkerTypes } from "@/utils/types";
 
-
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function TheSavedLocations() {
   const { data } = useQuery({
@@ -32,28 +37,39 @@ export default function TheSavedLocations() {
   const mappedSavedOnes = data?.map((saved: SavedMarkerTypes, idx: any) => (
     <li key={idx}>
       <Card>
-        <CardContent className="flex items-center justify-between gap-4 py-2 border-red-600">
+        <CardContent className="flex flex-col justify-between gap-4 py-4 border-red-600">
           <p>{saved.infoWindowContent}</p>
+          <div className="mr-2">
+
           <TheRemoveSavedLocationButton savedMarkers={savedMarkers} idx={idx} />
-          <TheViewLocationButton
-            saved={saved}
-          />
+          <TheViewLocationButton saved={saved} />
+          </div>
         </CardContent>
       </Card>
     </li>
   ));
   return (
-    <Sheet>
-      <SheetTrigger className="flex flex-col items-center gap-3">
-        <CiBookmark size={25} />
-        <p className="text-xs font-medium">Saved</p>
-      </SheetTrigger>
-      <SheetContent side={"left"}>
-        <SheetHeader>
-          <SheetTitle>Saved Locations</SheetTitle>
-        </SheetHeader>
-        <ul className="flex flex-col gap-2 pt-5">{mappedSavedOnes}</ul>
-      </SheetContent>
-    </Sheet>
+    <>
+      <Sheet>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <SheetTrigger>
+                <CiBookmark size={25} />
+              </SheetTrigger>
+            </TooltipTrigger>
+            <TooltipContent className="ml-4 mt-2 text-xs">
+              <p>Saved Locations</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        <SheetContent side={"left"}>
+          <SheetHeader>
+            <SheetTitle>Saved Locations</SheetTitle>
+          </SheetHeader>
+          <ul className="flex flex-col gap-2 pt-5">{mappedSavedOnes}</ul>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }
