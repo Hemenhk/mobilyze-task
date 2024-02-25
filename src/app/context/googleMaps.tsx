@@ -31,6 +31,10 @@ export default function GoogleMapsContextProvider({
 
   const [infoWindowContent, setInfoWindowContent] = useState<string>("");
   const [newPosition, setNewPosition] = useState<any>(null);
+  const [clickedPosition, setClickedPosition] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
 
   const [searchResult, setSearchResult] = useState("");
   const [savedCoordinates, setSavedCoordinates] = useState<
@@ -89,6 +93,7 @@ export default function GoogleMapsContextProvider({
   }) => {
     setInfoWindowContent(newPosition.infoWindowContent);
     setMarkerPosition(newPosition);
+    setClickedPosition(newPosition)
     map?.panTo(newPosition);
   };
 
@@ -113,6 +118,7 @@ export default function GoogleMapsContextProvider({
         center,
         isLoaded,
         markerPosition,
+        clickedPosition,
         destinationRef,
         infoWindowContent,
         newPosition,
@@ -120,6 +126,7 @@ export default function GoogleMapsContextProvider({
         setSearchResult,
         setInfoWindowContent,
         setNewPosition,
+        setClickedPosition,
         handlePlaceChanged,
         handleSavePosition,
       }}
