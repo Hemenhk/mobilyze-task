@@ -1,13 +1,9 @@
 export type GoogleMapsContextType = {
-  center: {
-    lat: number;
-    lng: number;
-  };
   isLoaded: boolean;
   newPosition: {
-    lat: any;
-    lng: any;
-    infoWindowContent: any;
+    lat: number;
+    lng: number;
+    infoWindowContent: string;
   };
   clickedPosition: {
     lat: number;
@@ -18,7 +14,11 @@ export type GoogleMapsContextType = {
     lng: number;
   };
   infoWindowContent: string;
-
+  savedCoordinates: {
+    lat: number;
+    lng: number;
+    infoWindowContent: string;
+  }[];
   destinationRef: React.RefObject<HTMLInputElement>;
   setMap: React.Dispatch<React.SetStateAction<google.maps.Map | null>>;
 
@@ -26,6 +26,12 @@ export type GoogleMapsContextType = {
   setInfoWindowContent: React.Dispatch<React.SetStateAction<string>>;
   handlePlaceChanged: () => Promise<unknown>;
   handleSavePosition: (newPosition: any) => void;
+  setMarkerPosition: React.Dispatch<
+    React.SetStateAction<{
+      lat: number;
+      lng: number;
+    }>
+  >;
   setNewPosition: React.Dispatch<any>;
   setClickedPosition: React.Dispatch<
     React.SetStateAction<{
@@ -33,4 +39,10 @@ export type GoogleMapsContextType = {
       lng: number;
     } | null>
   >;
+};
+
+export type SavedMarkerTypes = {
+  lat: number;
+  lng: number;
+  infoWindowContent: string;
 };

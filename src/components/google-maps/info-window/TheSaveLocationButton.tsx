@@ -8,7 +8,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 export default function TheSaveLocationButton() {
   const queryClient = useQueryClient();
   const { handleSavePosition, newPosition } = useGoogleMapsContext();
-  console.log("newPosition", newPosition);
 
   const { mutateAsync: savePositionMutation } = useMutation({
     mutationFn: async () => handleSavePosition(newPosition),

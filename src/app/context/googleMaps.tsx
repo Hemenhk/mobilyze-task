@@ -15,7 +15,6 @@ type GoogleMapsProviderProps = {
 export default function GoogleMapsContextProvider({
   children,
 }: GoogleMapsProviderProps) {
-
   const center = { lat: 48.8584, lng: 2.2945 };
 
   const { isLoaded } = useJsApiLoader({
@@ -40,7 +39,6 @@ export default function GoogleMapsContextProvider({
   const [savedCoordinates, setSavedCoordinates] = useState<
     { lat: number; lng: number; infoWindowContent: string }[]
   >(JSON.parse(localStorage.getItem("savedCoordinates") || "[]"));
-
 
   const geocodePlace = (place: any, geocoder: any) => {
     return new Promise((resolve, reject) => {
@@ -71,7 +69,11 @@ export default function GoogleMapsContextProvider({
       const location = geometry.location;
       const addressName = formatted_address;
 
-      const newPosition = {
+      const newPosition: {
+        lat: number;
+        lng: number;
+        infoWindowContent: string;
+      } = {
         lat: location.lat(),
         lng: location.lng(),
         infoWindowContent: addressName,
@@ -87,20 +89,21 @@ export default function GoogleMapsContextProvider({
   };
 
   const updatePosition = (newPosition: {
-    lat: any;
-    lng: any;
-    infoWindowContent: any;
+    lat: number;
+    lng: number;
+    infoWindowContent: string;
   }) => {
+    console.log("Updating position", newPosition);
     setInfoWindowContent(newPosition.infoWindowContent);
     setMarkerPosition(newPosition);
-    setClickedPosition(newPosition)
+    setClickedPosition(newPosition);
     map?.panTo(newPosition);
   };
 
   const handleSavePosition = (newPosition: {
-    lat: any;
-    lng: any;
-    infoWindowContent: any;
+    lat: number;
+    lng: number;
+    infoWindowContent: string;
   }) => {
     if (!newPosition) return;
 
@@ -115,17 +118,18 @@ export default function GoogleMapsContextProvider({
   return (
     <GoogleMapsContext.Provider
       value={{
-        center,
         isLoaded,
         markerPosition,
         clickedPosition,
         destinationRef,
         infoWindowContent,
         newPosition,
+        savedCoordinates,
         setMap,
         setSearchResult,
         setInfoWindowContent,
         setNewPosition,
+        setMarkerPosition,
         setClickedPosition,
         handlePlaceChanged,
         handleSavePosition,

@@ -1,27 +1,23 @@
 "use client";
-import { GoogleMap, Marker } from "@react-google-maps/api";
-import TheSearchBar from "./search-bar/TheSearchBar";
+
+import { GoogleMap } from "@react-google-maps/api";
 import { useGoogleMapsContext } from "@/app/context/googleMaps";
+
 import TheInfoWindow from "./info-window/TheInfoWindow";
-import { useState } from "react";
 import TheInfoWindowForClicks from "./info-window/TheInfoWindowForClicks";
+import TheSearchBar from "./search-bar/TheSearchBar";
 
 export default function TheGoogleMap() {
-  // const [markedPosition, setMarkedPosition] = useState<{
-  //   lat: number;
-  //   lng: number;
-  // } | null>(null);
   const {
-    handlePlaceChanged,
+    isLoaded,
+    markerPosition,
+    clickedPosition,
     setSearchResult,
     setInfoWindowContent,
     setNewPosition,
     setClickedPosition,
     setMap,
-    isLoaded,
-    markerPosition,
-    clickedPosition,
-    infoWindowContent,
+    handlePlaceChanged,
   } = useGoogleMapsContext();
 
   const onLoad = (autocomplete: any) => {
@@ -37,7 +33,6 @@ export default function TheGoogleMap() {
     const clickedLat = event?.latLng.lat();
     const clickedLng = event?.latLng.lng();
 
-    // Perform reverse geocoding to get the address name
     const geocoder = new window.google.maps.Geocoder();
     geocoder.geocode({ location: event.latLng }, (results, status) => {
       const addressName = results[0].formatted_address;
@@ -48,11 +43,16 @@ export default function TheGoogleMap() {
         lng: clickedLng,
         infoWindowContent: addressName,
       };
-      // Update the clicked position state
       setClickedPosition(clickedPosition);
       setNewPosition(clickedPosition);
     });
   };
+
+  const renderInfoWindowMarker = clickedPosition ? (
+    <TheInfoWindowForClicks clickedPosition={clickedPosition} />
+  ) : (
+    <TheInfoWindow />
+  );
 
   return (
     <>
@@ -69,11 +69,7 @@ export default function TheGoogleMap() {
             setClickedPosition(null);
           }}
         >
-          {clickedPosition ? (
-            <TheInfoWindowForClicks clickedPosition={clickedPosition} />
-          ) : (
-            <TheInfoWindow />
-          )}
+          {renderInfoWindowMarker}
         </GoogleMap>
       ) : (
         <div>Loading Google Maps...</div>

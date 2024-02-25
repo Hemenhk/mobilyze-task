@@ -5,7 +5,14 @@ import { useGoogleMapsContext } from "@/app/context/googleMaps";
 import TheSaveLocationButton from "./TheSaveLocationButton";
 
 export default function TheInfoWindow() {
-  const { infoWindowContent, markerPosition } = useGoogleMapsContext();
+  const { infoWindowContent, markerPosition, savedCoordinates } =
+    useGoogleMapsContext();
+
+  const isLocationSaved = savedCoordinates.some(
+    (saved) =>
+      saved.lat === markerPosition.lat && saved.lng === markerPosition.lng
+  );
+  console.log("info", infoWindowContent);
 
   return (
     <>
@@ -26,7 +33,7 @@ export default function TheInfoWindow() {
           >
             <div className="flex flex-col gap-2">
               <p className="font-medium tracking-wide">{infoWindowContent}</p>
-              <TheSaveLocationButton />
+              {!isLocationSaved && <TheSaveLocationButton />}
             </div>
           </InfoWindowF>
         </>
