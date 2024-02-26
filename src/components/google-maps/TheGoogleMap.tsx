@@ -52,8 +52,10 @@ export default function TheGoogleMap() {
 
   const renderInfoWindowMarker = clickedPosition ? (
     <TheInfoWindowForClicks clickedPosition={clickedPosition} />
-  ) : (
+  ) : markerPosition ? (
     <TheInfoWindow />
+  ) : (
+    <></>
   );
 
   return (

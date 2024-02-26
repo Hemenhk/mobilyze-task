@@ -51,7 +51,7 @@ export default function TheSavedLocations() {
         <li key={idx}>
           <Card>
             <CardContent className="flex flex-col justify-between gap-4 py-4 border-red-600">
-              <p className="tracking-wide">{saved.infoWindowContent}</p>
+              <p className="tracking-wide text-sm border-b pb-2">{saved.infoWindowContent}</p>
               <div className="flex justify-between items-center mr-2">
                 <p className="text-xs tracking-wide">
                   <span className="font-semibold">lat:</span> {saved.lat}
@@ -61,6 +61,7 @@ export default function TheSavedLocations() {
                   <TheViewLocationButton saved={saved} />
                   <TheRemoveSavedLocationButton
                     savedLocation={savedLocation}
+                    saved={saved}
                     idx={idx}
                   />
                 </div>

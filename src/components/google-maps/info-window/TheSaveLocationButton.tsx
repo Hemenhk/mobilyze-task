@@ -1,9 +1,11 @@
 "use client";
 
 import { Button } from "../../ui/button";
-import { CiBookmark } from "react-icons/ci";
+import { GoBookmarkFill  } from "react-icons/go";
+
 import { useGoogleMapsContext } from "@/app/context/googleMaps";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import ToolTipProvider from "@/components/ToolTipProvider";
 
 export default function TheSaveLocationButton() {
   const queryClient = useQueryClient();
@@ -19,7 +21,8 @@ export default function TheSaveLocationButton() {
 
   return (
     <Button onClick={savePositionMutation} className="bg-transparent text-black hover:bg-transparent">
-      <CiBookmark size={17}/>
+      <ToolTipProvider icon={<GoBookmarkFill size={17}/>} text={"Save Location"}/>
+      
     </Button>
   );
 }

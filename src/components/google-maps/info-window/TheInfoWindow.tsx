@@ -13,6 +13,8 @@ export default function TheInfoWindow() {
       saved.lat === markerPosition.lat && saved.lng === markerPosition.lng
   );
 
+  console.log("marker1", markerPosition);
+  console.log("info1", infoWindowContent);
   return (
     <>
       {infoWindowContent ? (

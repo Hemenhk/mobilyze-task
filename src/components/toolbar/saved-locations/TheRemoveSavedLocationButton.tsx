@@ -1,17 +1,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { IoTrashOutline } from "react-icons/io5";
 import { SavedLocationTypes } from "@/utils/types";
 import ToolTipProvider from "@/components/ToolTipProvider";
 import { useToast } from "@/components/ui/use-toast";
+import { GoBookmarkSlashFill } from "react-icons/go";
 
 type RemoveLocationProps = {
   savedLocation: SavedLocationTypes[];
+  saved: SavedLocationTypes;
   idx: any;
 };
 
 export default function TheRemoveSavedLocationButton({
   savedLocation,
+  saved,
   idx,
 }: RemoveLocationProps) {
   const queryClient = useQueryClient();
@@ -29,7 +31,7 @@ export default function TheRemoveSavedLocationButton({
           );
           toast({
             title: "Location deleted!",
-            description: "Successfully deleted location.",
+            description: `Successfully deleted ${saved.infoWindowContent}.`,
             variant: "destructive",
           });
           setTimeout(() => {
@@ -52,7 +54,7 @@ export default function TheRemoveSavedLocationButton({
       onClick={() => removeLocationMutation(idx)}
     >
       <ToolTipProvider
-        icon={<IoTrashOutline size={17} />}
+        icon={<GoBookmarkSlashFill size={17} />}
         text={"Delete Location"}
       />
     </Button>

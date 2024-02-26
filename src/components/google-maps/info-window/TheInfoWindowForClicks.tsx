@@ -38,7 +38,9 @@ export default function TheInfoWindowForClicks({
             }}
           >
             <div className="flex flex-col gap-2">
-              <p className="font-medium tracking-wide border-b pb-2">{infoWindowContent}</p>
+              <p className="font-medium tracking-wide border-b pb-2">
+                {infoWindowContent}
+              </p>
               <div className="flex justify-between items-center mr-2">
                 <p className="text-xs tracking-wide">
                   {clickedPosition.lat}

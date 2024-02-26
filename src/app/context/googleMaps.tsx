@@ -95,6 +95,8 @@ export default function GoogleMapsContextProvider({
     infoWindowContent: string;
   }) => {
     console.log("Updating position", newPosition);
+    console.log("marker2", markerPosition)
+    console.log("info", infoWindowContent)
     setInfoWindowContent(newPosition.infoWindowContent);
     setMarkerPosition(newPosition);
     setClickedPosition(newPosition);
@@ -116,7 +118,7 @@ export default function GoogleMapsContextProvider({
     setSavedCoordinates(newCoordinates);
     toast({
       title: "Location saved!",
-      description: "Location has been saved on your device.",
+      description: `${newPosition.infoWindowContent} has been saved on your device.`,
     });
     setTimeout(() => {
       dismiss();

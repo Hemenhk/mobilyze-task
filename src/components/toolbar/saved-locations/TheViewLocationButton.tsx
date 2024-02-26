@@ -1,20 +1,21 @@
 import { Button } from "@/components/ui/button";
 import React from "react";
 import { useGoogleMapsContext } from "@/app/context/googleMaps";
-import { SavedMarkerTypes } from "@/utils/types";
+import { SavedLocationTypes } from "@/utils/types";
 import { IoEyeOutline } from "react-icons/io5";
 import ToolTipProvider from "@/components/ToolTipProvider";
 
 type ViewLocationProps = {
-  saved: SavedMarkerTypes;
+  saved: SavedLocationTypes;
 };
 
 export default function TheViewLocationButton({ saved }: ViewLocationProps) {
-  const { setMarkerPosition, setInfoWindowContent } = useGoogleMapsContext();
+  const { setMarkerPosition, setInfoWindowContent, setNewPosition, setClickedPosition } = useGoogleMapsContext();
 
-  const handleViewLocation = (saved: SavedMarkerTypes) => {
+  const handleViewLocation = (saved: SavedLocationTypes) => {
     setMarkerPosition(saved);
     setInfoWindowContent(saved.infoWindowContent);
+    setClickedPosition(saved)
   };
   return (
     <Button
