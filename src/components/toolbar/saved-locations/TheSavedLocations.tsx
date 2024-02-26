@@ -1,3 +1,6 @@
+"use client";
+
+import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { CiBookmark } from "react-icons/ci";
@@ -8,6 +11,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 import TheRemoveSavedLocationButton from "./TheRemoveSavedLocationButton";
@@ -20,8 +24,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
 
 import TheExportToPDF from "./TheExportToPDF";
 
@@ -47,8 +49,6 @@ export default function TheSavedLocations() {
     indexOfFirstMarker,
     indexOfLastMarker
   );
-
-  
 
   const mappedSavedOnes = Array.isArray(currentMarkers)
     ? currentMarkers?.map((saved: SavedLocationTypes, idx: any) => (

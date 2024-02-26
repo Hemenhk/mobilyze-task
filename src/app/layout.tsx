@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+
 import ReactQueryProvider from "./context/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import GoogleMapsContextProvider from "./context/googleMaps";

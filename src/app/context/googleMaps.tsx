@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useRef, useState } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useJsApiLoader } from "@react-google-maps/api";
 
 import { GoogleMapsContextType } from "@/utils/types";
@@ -39,7 +39,16 @@ export default function GoogleMapsContextProvider({
   const [searchResult, setSearchResult] = useState("");
   const [savedCoordinates, setSavedCoordinates] = useState<
     { lat: number; lng: number; infoWindowContent: string }[]
-  >(JSON.parse(localStorage.getItem("savedCoordinates") || "[]"));
+  >([]);
+
+  useEffect(() => {
+    const dataFromStorage = localStorage.getItem("savedCoordinates");
+    if (dataFromStorage) {
+      const parsedData = JSON.parse(dataFromStorage);
+      setSavedCoordinates(parsedData);
+    }
+  }, []);
+
 
   const geocodePlace = (place: any, geocoder: any) => {
     return new Promise((resolve, reject) => {

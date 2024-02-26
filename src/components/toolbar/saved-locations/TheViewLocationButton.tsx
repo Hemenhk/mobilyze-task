@@ -1,9 +1,11 @@
-import { Button } from "@/components/ui/button";
-import React from "react";
 import { useGoogleMapsContext } from "@/app/context/googleMaps";
-import { SavedLocationTypes } from "@/utils/types";
-import { IoEyeOutline } from "react-icons/io5";
+
 import ToolTipProvider from "@/components/ToolTipProvider";
+
+import { Button } from "@/components/ui/button";
+import { IoEyeOutline } from "react-icons/io5";
+
+import { SavedLocationTypes } from "@/utils/types";
 
 type ViewLocationProps = {
   saved: SavedLocationTypes;

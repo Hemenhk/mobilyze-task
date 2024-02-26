@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 import { InfoWindowF, Marker } from "@react-google-maps/api";
 
 import { useGoogleMapsContext } from "@/app/context/googleMaps";
