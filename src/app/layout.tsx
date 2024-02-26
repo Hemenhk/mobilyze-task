@@ -4,6 +4,7 @@ import "./globals.css";
 import ReactQueryProvider from "./context/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import GoogleMapsContextProvider from "./context/googleMaps";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ReactQueryProvider>
-          <GoogleMapsContextProvider>{children}</GoogleMapsContextProvider>
+          <GoogleMapsContextProvider>
+            {children}
+            <Toaster />
+          </GoogleMapsContextProvider>
           <ReactQueryDevtools />
         </ReactQueryProvider>
       </body>

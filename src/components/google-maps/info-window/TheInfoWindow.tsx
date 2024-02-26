@@ -12,8 +12,6 @@ export default function TheInfoWindow() {
     (saved) =>
       saved.lat === markerPosition.lat && saved.lng === markerPosition.lng
   );
-  console.log("info", infoWindowContent);
-  console.log("marker", markerPosition);
 
   return (
     <>
@@ -34,7 +32,15 @@ export default function TheInfoWindow() {
           >
             <div className="flex flex-col gap-2">
               <p className="font-medium tracking-wide">{infoWindowContent}</p>
-              {!isLocationSaved && <TheSaveLocationButton />}
+              <div className="flex justify-between items-center mr-2">
+                <p className="text-xs tracking-wide">
+                  <span className="font-semibold">lat:</span>{" "}
+                  {markerPosition.lat}
+                  <br /> <span className="font-semibold">lng:</span>{" "}
+                  {markerPosition.lng}
+                </p>
+                <div>{!isLocationSaved && <TheSaveLocationButton />}</div>
+              </div>
             </div>
           </InfoWindowF>
         </>

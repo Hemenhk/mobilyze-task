@@ -64,7 +64,7 @@ export default function TheGoogleMap() {
           center={markerPosition}
           mapContainerStyle={{ width: "100%", height: "100%" }}
           zoom={10}
-          options={{ mapTypeControl: false }}
+          options={{ mapTypeControl: false, streetViewControl: false }}
           onLoad={(map) => {
             setMap(map);
             map.addListener("click", onMapClick);

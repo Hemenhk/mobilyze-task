@@ -18,9 +18,8 @@ export default function TheSaveLocationButton() {
   });
 
   return (
-    <Button onClick={savePositionMutation} className="flex items-center gap-2">
-      <CiBookmark strokeWidth={1}/>
-      <p className="tracking-wider text-xs">Save</p>
+    <Button onClick={savePositionMutation} className="bg-transparent text-black hover:bg-transparent">
+      <CiBookmark size={17}/>
     </Button>
   );
 }

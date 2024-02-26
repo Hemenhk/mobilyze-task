@@ -12,7 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 import TheRemoveSavedLocationButton from "./TheRemoveSavedLocationButton";
 import TheViewLocationButton from "./TheViewLocationButton";
-import { SavedMarkerTypes } from "@/utils/types";
+import { SavedLocationTypes } from "@/utils/types";
 
 import {
   Tooltip,
@@ -20,8 +20,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function TheSavedLocations() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const savedLocationsPerPage = 5;
+
   const { data } = useQuery({
     queryKey: ["marker"],
     queryFn: () => {
@@ -32,22 +37,42 @@ export default function TheSavedLocations() {
     },
   });
 
-  const savedMarkers: SavedMarkerTypes[] = data || "[]";
+  const savedLocation: SavedLocationTypes[] = data || "[]";
+  const indexOfLastMarker = currentPage * savedLocationsPerPage;
+  const indexOfFirstMarker = indexOfLastMarker - savedLocationsPerPage;
+  const currentMarkers = savedLocation?.slice(
+    indexOfFirstMarker,
+    indexOfLastMarker
+  );
 
-  const mappedSavedOnes = data?.map((saved: SavedMarkerTypes, idx: any) => (
-    <li key={idx}>
-      <Card>
-        <CardContent className="flex flex-col justify-between gap-4 py-4 border-red-600">
-          <p>{saved.infoWindowContent}</p>
-          <div className="mr-2">
 
-          <TheRemoveSavedLocationButton savedMarkers={savedMarkers} idx={idx} />
-          <TheViewLocationButton saved={saved} />
-          </div>
-        </CardContent>
-      </Card>
-    </li>
-  ));
+  const mappedSavedOnes = Array.isArray(currentMarkers)
+    ? currentMarkers?.map((saved: SavedLocationTypes, idx: any) => (
+        <li key={idx}>
+          <Card>
+            <CardContent className="flex flex-col justify-between gap-4 py-4 border-red-600">
+              <p className="tracking-wide">{saved.infoWindowContent}</p>
+              <div className="flex justify-between items-center mr-2">
+                <p className="text-xs tracking-wide">
+                  <span className="font-semibold">lat:</span> {saved.lat}
+                  <br /> <span className="font-semibold">lng:</span> {saved.lng}
+                </p>
+                <div>
+                  <TheViewLocationButton saved={saved} />
+                  <TheRemoveSavedLocationButton
+                    savedLocation={savedLocation}
+                    idx={idx}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </li>
+      ))
+    : null;
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
   return (
     <>
       <Sheet>
@@ -68,6 +93,19 @@ export default function TheSavedLocations() {
             <SheetTitle>Saved Locations</SheetTitle>
           </SheetHeader>
           <ul className="flex flex-col gap-2 pt-5">{mappedSavedOnes}</ul>
+          <div className="flex justify-center mt-4">
+            {currentPage > 1 && (
+              <Button
+                onClick={() => paginate(currentPage - 1)}
+                className="mr-2"
+              >
+                Previous
+              </Button>
+            )}
+            {currentPage * savedLocationsPerPage < savedLocation.length && (
+              <Button onClick={() => paginate(currentPage + 1)}>Next</Button>
+            )}
+          </div>
         </SheetContent>
       </Sheet>
     </>

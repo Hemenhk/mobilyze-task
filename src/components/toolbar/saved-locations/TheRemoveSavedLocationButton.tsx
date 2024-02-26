@@ -1,30 +1,41 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { IoTrashOutline } from "react-icons/io5";
-import { SavedMarkerTypes } from "@/utils/types";
+import { SavedLocationTypes } from "@/utils/types";
+import ToolTipProvider from "@/components/ToolTipProvider";
+import { useToast } from "@/components/ui/use-toast";
 
-type RemoveMarkerProps = {
-  savedMarkers: SavedMarkerTypes[];
+type RemoveLocationProps = {
+  savedLocation: SavedLocationTypes[];
   idx: any;
 };
 
 export default function TheRemoveSavedLocationButton({
-  savedMarkers,
+  savedLocation,
   idx,
-}: RemoveMarkerProps) {
+}: RemoveLocationProps) {
   const queryClient = useQueryClient();
+  const { toast, dismiss } = useToast();
 
-  const { mutateAsync: removeMarkerMutation } = useMutation({
+  const { mutateAsync: removeLocationMutation } = useMutation({
     mutationFn: async (idx: number) => {
       return new Promise((resolve, reject) => {
-        const updatedMarkers = [...savedMarkers];
-        if (idx >= 0 && idx < updatedMarkers.length) {
-          updatedMarkers.splice(idx, 1);
+        const updatedLocation = [...savedLocation];
+        if (idx >= 0 && idx < updatedLocation.length) {
+          updatedLocation.splice(idx, 1);
           localStorage.setItem(
             "savedCoordinates",
-            JSON.stringify(updatedMarkers)
+            JSON.stringify(updatedLocation)
           );
-          resolve(updatedMarkers);
+          toast({
+            title: "Location deleted!",
+            description: "Successfully deleted location.",
+            variant: "destructive",
+          });
+          setTimeout(() => {
+            dismiss();
+          }, 2000);
+          resolve(updatedLocation);
         } else {
           reject(new Error("Invalid marker index"));
         }
@@ -38,9 +49,12 @@ export default function TheRemoveSavedLocationButton({
   return (
     <Button
       className="bg-transparent text-black hover:bg-transparent"
-      onClick={() => removeMarkerMutation(idx)}
+      onClick={() => removeLocationMutation(idx)}
     >
-      <IoTrashOutline />
+      <ToolTipProvider
+        icon={<IoTrashOutline size={17} />}
+        text={"Delete Location"}
+      />
     </Button>
   );
 }

@@ -3,6 +3,7 @@ import React, { createContext, useContext, useRef, useState } from "react";
 import { useJsApiLoader } from "@react-google-maps/api";
 
 import { GoogleMapsContextType } from "@/utils/types";
+import { useToast } from "@/components/ui/use-toast";
 
 export const GoogleMapsContext = createContext<GoogleMapsContextType | null>(
   null
@@ -16,7 +17,7 @@ export default function GoogleMapsContextProvider({
   children,
 }: GoogleMapsProviderProps) {
   const center = { lat: 48.8584, lng: 2.2945 };
-
+  const { toast, dismiss } = useToast();
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY as string,
@@ -113,6 +114,13 @@ export default function GoogleMapsContextProvider({
     const newCoordinates = [...savedCoordinates, newPosition];
     localStorage.setItem("savedCoordinates", JSON.stringify(newCoordinates));
     setSavedCoordinates(newCoordinates);
+    toast({
+      title: "Location saved!",
+      description: "Location has been saved on your device.",
+    });
+    setTimeout(() => {
+      dismiss();
+    }, 2000);
   };
 
   return (

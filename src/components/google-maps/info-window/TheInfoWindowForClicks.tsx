@@ -13,7 +13,12 @@ type InfoWindowProps = {
 export default function TheInfoWindowForClicks({
   clickedPosition,
 }: InfoWindowProps) {
-  const { infoWindowContent } = useGoogleMapsContext();
+  const { infoWindowContent, savedCoordinates } = useGoogleMapsContext();
+
+  const isLocationSaved = savedCoordinates.some(
+    (saved) =>
+      saved.lat === clickedPosition.lat && saved.lng === clickedPosition.lng
+  );
 
   return (
     <>
@@ -33,8 +38,15 @@ export default function TheInfoWindowForClicks({
             }}
           >
             <div className="flex flex-col gap-2">
-              <p className="font-medium tracking-wide">{infoWindowContent}</p>
-              <TheSaveLocationButton />
+              <p className="font-medium tracking-wide border-b pb-2">{infoWindowContent}</p>
+              <div className="flex justify-between items-center mr-2">
+                <p className="text-xs tracking-wide">
+                  {clickedPosition.lat}
+                  <br />
+                  {clickedPosition.lng}
+                </p>
+                {!isLocationSaved && <TheSaveLocationButton />}
+              </div>
             </div>
           </InfoWindowF>
         </>

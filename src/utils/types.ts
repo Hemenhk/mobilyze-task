@@ -42,7 +42,7 @@ export type GoogleMapsContextType = {
   >;
 };
 
-export type SavedMarkerTypes = {
+export type SavedLocationTypes = {
   lat: number;
   lng: number;
   infoWindowContent: string;
