@@ -19,8 +19,16 @@ export default function TheSaveLocationButton() {
     },
   });
 
+  const handleClick = async () => {
+    try {
+      await savePositionMutation(); 
+    } catch (error) {
+      console.error("Error saving position:", error);
+    }
+  };
+
   return (
-    <Button onClick={savePositionMutation} className="bg-transparent text-black hover:bg-transparent">
+    <Button onClick={handleClick} className="bg-transparent text-black hover:bg-transparent">
       <ToolTipProvider icon={<GoBookmarkFill size={17}/>} text={"Save Location"}/>
       
     </Button>

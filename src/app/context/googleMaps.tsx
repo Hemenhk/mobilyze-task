@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useJsApiLoader } from "@react-google-maps/api";
 
-import { GoogleMapsContextType } from "@/utils/types";
+import { GoogleMapsContextType, NewPositionType } from "@/utils/types";
 import { useToast } from "@/components/ui/use-toast";
 
 export const GoogleMapsContext = createContext<GoogleMapsContextType | null>(
@@ -30,7 +30,7 @@ export default function GoogleMapsContextProvider({
   const [markerPosition, setMarkerPosition] = useState(center);
 
   const [infoWindowContent, setInfoWindowContent] = useState<string>("");
-  const [newPosition, setNewPosition] = useState<any>(null);
+  const [newPosition, setNewPosition] = useState<NewPositionType | null>(null);
   const [clickedPosition, setClickedPosition] = useState<{
     lat: number;
     lng: number;
@@ -72,18 +72,14 @@ export default function GoogleMapsContextProvider({
     const geocoder = new window.google.maps.Geocoder();
 
     try {
-      const result = await geocodePlace(place, geocoder);
+      const result = await geocodePlace(place, geocoder) as google.maps.GeocoderResult;
 
       const { geometry, formatted_address } = result;
 
       const location = geometry.location;
       const addressName = formatted_address;
 
-      const newPosition: {
-        lat: number;
-        lng: number;
-        infoWindowContent: string;
-      } = {
+      const newPosition = {
         lat: location.lat(),
         lng: location.lng(),
         infoWindowContent: addressName,
@@ -98,11 +94,9 @@ export default function GoogleMapsContextProvider({
     }
   };
 
-  const updatePosition = (newPosition: {
-    lat: number;
-    lng: number;
-    infoWindowContent: string;
-  }) => {
+  const updatePosition = (newPosition: NewPositionType | null) => {
+    if (!newPosition) return;
+
     console.log("Updating position", newPosition);
     console.log("marker2", markerPosition)
     console.log("info", infoWindowContent)
@@ -138,12 +132,13 @@ export default function GoogleMapsContextProvider({
     <GoogleMapsContext.Provider
       value={{
         map,
+        center,
         isLoaded,
         markerPosition,
         clickedPosition,
         destinationRef,
         infoWindowContent,
-        newPosition,
+        newPosition: newPosition ?? { lat: 0, lng: 0, infoWindowContent: "" },
         savedCoordinates,
         setMap,
         setSearchResult,

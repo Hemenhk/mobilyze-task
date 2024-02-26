@@ -1,11 +1,11 @@
 export type GoogleMapsContextType = {
   isLoaded: boolean;
-  map: google.maps.Map | null
-  newPosition: {
+  center: {
     lat: number;
     lng: number;
-    infoWindowContent: string;
-  };
+};
+  map: google.maps.Map | null
+  newPosition: NewPositionType
   clickedPosition: {
     lat: number;
     lng: number;
@@ -51,3 +51,9 @@ export type SavedLocationTypes = {
 export type OnLoadProps = {
   onLoad: (autocomplete: any) => void;
 };
+
+export type NewPositionType = {
+  lat: number;
+  lng: number;
+  infoWindowContent: string;
+}

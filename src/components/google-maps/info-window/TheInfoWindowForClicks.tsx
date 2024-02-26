@@ -19,25 +19,22 @@ export default function TheInfoWindowForClicks({
 
   const isLocationSaved = savedCoordinates.some(
     (saved) =>
-      saved.lat === clickedPosition.lat && saved.lng === clickedPosition.lng
+      saved?.lat === clickedPosition?.lat && saved?.lng === clickedPosition?.lng
   );
+
+  
 
   return (
     <>
-      {infoWindowContent ? (
+      {infoWindowContent && clickedPosition ? (
         <>
           <Marker position={clickedPosition} />
           <InfoWindowF
             position={{
-              lat: clickedPosition?.lat,
-              lng: clickedPosition?.lng,
+              lat: clickedPosition?.lat || 0,
+              lng: clickedPosition?.lng || 0,
             }}
-            options={{
-              pixelOffset: {
-                width: 0,
-                height: -40,
-              },
-            }}
+            options={{ pixelOffset: new window.google.maps.Size(0, -40) }}
           >
             <div className="flex flex-col gap-2">
               <p className="font-medium tracking-wide border-b pb-2">
@@ -45,9 +42,9 @@ export default function TheInfoWindowForClicks({
               </p>
               <div className="flex justify-between items-center mr-2">
                 <p className="text-xs tracking-wide">
-                  {clickedPosition.lat}
+                  {clickedPosition?.lat}
                   <br />
-                  {clickedPosition.lng}
+                  {clickedPosition?.lng}
                 </p>
                 {!isLocationSaved && <TheSaveLocationButton />}
               </div>

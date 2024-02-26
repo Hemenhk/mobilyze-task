@@ -15,14 +15,17 @@ export default function TheExportToPDF({ currentMarkers }: ExportPDFProps) {
     const pdf = new jsPDF();
     let yPos = 10;
     currentMarkers.forEach((marker, index) => {
-      pdf.text(10, yPos, `Location ${index + 1}:`);
-      pdf.text(20, yPos + 10, `Latitude: ${marker.lat}`);
-      pdf.text(20, yPos + 20, `Longitude: ${marker.lng}`);
-      pdf.text(20, yPos + 30, `Info: ${marker.infoWindowContent}`);
-      yPos += 40;
+      if (marker) {
+        // Check if marker is not null or undefined
+        pdf.text((10).toString(), yPos,index + 1);
+        pdf.text((20).toString(), yPos + 10, marker.lat);
+        pdf.text((20).toString(), yPos + 20, marker.lng);
+        yPos += 40;
+      }
     });
     pdf.save("saved_locations.pdf");
   };
+
   return (
     <Button
       onClick={handleExportToPdf}

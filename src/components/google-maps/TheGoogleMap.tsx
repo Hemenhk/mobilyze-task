@@ -5,14 +5,13 @@ import { useGoogleMapsContext } from "@/app/context/googleMaps";
 
 import TheInfoWindow from "./info-window/TheInfoWindow";
 import TheInfoWindowForClicks from "./info-window/TheInfoWindowForClicks";
-import TheSearchBar from "./search-bar/TheSearchBar";
-import TheSavedLocations from "../toolbar/saved-locations/TheSavedLocations";
 import TheToolbar from "../toolbar/TheToolbar";
 
 export default function TheGoogleMap() {
   const {
     isLoaded,
     markerPosition,
+    center,
     clickedPosition,
     setSearchResult,
     setInfoWindowContent,
@@ -32,21 +31,25 @@ export default function TheGoogleMap() {
   };
 
   const onMapClick = (event: google.maps.MapMouseEvent) => {
-    const clickedLat = event?.latLng.lat();
-    const clickedLng = event?.latLng.lng();
-
+    const clickedLat = event?.latLng?.lat();
+    const clickedLng = event?.latLng?.lng();
+  
     const geocoder = new window.google.maps.Geocoder();
     geocoder.geocode({ location: event.latLng }, (results, status) => {
-      const addressName = results[0].formatted_address;
-      setInfoWindowContent(addressName);
-      console.log("Address Name:", addressName);
-      const clickedPosition = {
-        lat: clickedLat,
-        lng: clickedLng,
-        infoWindowContent: addressName,
-      };
-      setClickedPosition(clickedPosition);
-      setNewPosition(clickedPosition);
+      if (status === "OK" && results) {
+        const addressName = results[0].formatted_address;
+        setInfoWindowContent(addressName);
+        console.log("Address Name:", addressName);
+        const clickedPosition = {
+          lat: clickedLat || 0,
+          lng: clickedLng || 0,
+          infoWindowContent: addressName,
+        };
+        setClickedPosition(clickedPosition);
+        setNewPosition(clickedPosition);
+      } else {
+        console.error("Geocoder failed due to: ", status);
+      }
     });
   };
 

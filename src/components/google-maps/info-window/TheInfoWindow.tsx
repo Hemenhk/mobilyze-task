@@ -10,7 +10,7 @@ export default function TheInfoWindow() {
 
   const isLocationSaved = savedCoordinates.some(
     (saved) =>
-      saved.lat === markerPosition.lat && saved.lng === markerPosition.lng
+      saved?.lat === markerPosition?.lat && saved?.lng === markerPosition?.lng
   );
 
   console.log("marker1", markerPosition);
@@ -25,12 +25,8 @@ export default function TheInfoWindow() {
               lat: markerPosition?.lat,
               lng: markerPosition?.lng,
             }}
-            options={{
-              pixelOffset: {
-                width: 0,
-                height: -40,
-              },
-            }}
+            options={{ pixelOffset: new window.google.maps.Size(0, -40) } 
+            }
           >
             <div className="flex flex-col gap-2">
               <p className="font-medium tracking-wide">{infoWindowContent}</p>

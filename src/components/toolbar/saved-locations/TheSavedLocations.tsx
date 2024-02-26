@@ -56,12 +56,12 @@ export default function TheSavedLocations() {
           <Card>
             <CardContent className="flex flex-col justify-between gap-4 py-4 border-red-600">
               <p className="tracking-wide text-sm border-b pb-2">
-                {saved.infoWindowContent}
+                {saved?.infoWindowContent}
               </p>
               <div className="flex justify-between items-center mr-2">
                 <p className="text-xs tracking-wide">
-                  <span className="font-semibold">lat:</span> {saved.lat}
-                  <br /> <span className="font-semibold">lng:</span> {saved.lng}
+                  <span className="font-semibold">lat:</span> {saved?.lat}
+                  <br /> <span className="font-semibold">lng:</span> {saved?.lng}
                 </p>
                 <div className="flex flex-col md:flex-row">
                   <TheViewLocationButton saved={saved} />
