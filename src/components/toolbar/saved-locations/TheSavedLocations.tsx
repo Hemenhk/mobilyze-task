@@ -45,7 +45,7 @@ export default function TheSavedLocations() {
   const savedLocation: SavedLocationTypes[] = data || "[]";
   const indexOfLastMarker = currentPage * savedLocationsPerPage;
   const indexOfFirstMarker = indexOfLastMarker - savedLocationsPerPage;
-  const currentMarkers = savedLocation?.slice(
+  const currentMarkers = data?.slice(
     indexOfFirstMarker,
     indexOfLastMarker
   );
