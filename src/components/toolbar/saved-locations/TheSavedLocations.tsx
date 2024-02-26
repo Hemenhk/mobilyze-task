@@ -20,12 +20,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
+import TheExportToPDF from "./TheExportToPDF";
+
 export default function TheSavedLocations() {
+  const componentRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const savedLocationsPerPage = 5;
+  const savedLocationsPerPage = 4;
 
   const { data } = useQuery({
     queryKey: ["marker"],
@@ -45,19 +48,22 @@ export default function TheSavedLocations() {
     indexOfLastMarker
   );
 
+  
 
   const mappedSavedOnes = Array.isArray(currentMarkers)
     ? currentMarkers?.map((saved: SavedLocationTypes, idx: any) => (
         <li key={idx}>
           <Card>
             <CardContent className="flex flex-col justify-between gap-4 py-4 border-red-600">
-              <p className="tracking-wide text-sm border-b pb-2">{saved.infoWindowContent}</p>
+              <p className="tracking-wide text-sm border-b pb-2">
+                {saved.infoWindowContent}
+              </p>
               <div className="flex justify-between items-center mr-2">
                 <p className="text-xs tracking-wide">
                   <span className="font-semibold">lat:</span> {saved.lat}
                   <br /> <span className="font-semibold">lng:</span> {saved.lng}
                 </p>
-                <div>
+                <div className="flex flex-col md:flex-row">
                   <TheViewLocationButton saved={saved} />
                   <TheRemoveSavedLocationButton
                     savedLocation={savedLocation}
@@ -76,39 +82,42 @@ export default function TheSavedLocations() {
 
   return (
     <>
-      <Sheet>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <SheetTrigger>
-                <CiBookmark size={25} />
-              </SheetTrigger>
-            </TooltipTrigger>
-            <TooltipContent className="ml-4 mt-2 text-xs">
-              <p>Saved Locations</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <SheetContent side={"left"}>
-          <SheetHeader>
-            <SheetTitle>Saved Locations</SheetTitle>
-          </SheetHeader>
-          <ul className="flex flex-col gap-2 pt-5">{mappedSavedOnes}</ul>
-          <div className="flex justify-center mt-4">
-            {currentPage > 1 && (
-              <Button
-                onClick={() => paginate(currentPage - 1)}
-                className="mr-2"
-              >
-                Previous
-              </Button>
-            )}
-            {currentPage * savedLocationsPerPage < savedLocation.length && (
-              <Button onClick={() => paginate(currentPage + 1)}>Next</Button>
-            )}
-          </div>
-        </SheetContent>
-      </Sheet>
+      <div ref={componentRef}>
+        <Sheet>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <SheetTrigger>
+                  <CiBookmark size={25} />
+                </SheetTrigger>
+              </TooltipTrigger>
+              <TooltipContent className="ml-4 mt-2 text-xs">
+                <p>Saved Locations</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <SheetContent side={"left"}>
+            <SheetHeader className="flex flex-row justify-between items-center pt-5">
+              <SheetTitle>Saved Locations</SheetTitle>
+              <TheExportToPDF currentMarkers={currentMarkers} />
+            </SheetHeader>
+            <ul className="flex flex-col gap-2 pt-5">{mappedSavedOnes}</ul>
+            <div className="flex justify-center mt-4">
+              {currentPage > 1 && (
+                <Button
+                  onClick={() => paginate(currentPage - 1)}
+                  className="mr-2"
+                >
+                  Previous
+                </Button>
+              )}
+              {currentPage * savedLocationsPerPage < savedLocation.length && (
+                <Button onClick={() => paginate(currentPage + 1)}>Next</Button>
+              )}
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
     </>
   );
 }
