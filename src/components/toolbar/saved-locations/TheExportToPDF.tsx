@@ -25,7 +25,7 @@ export default function TheExportToPDF({ currentMarkers }: ExportPDFProps) {
   return (
     <Button
       onClick={handleExportToPdf}
-      className="bg-transparent text-black hover:bg-transparent"
+      className="bg-transparent text-black hover:bg-transparent pb-3"
     >
       <ToolTipProvider
         icon={<PiExport size={17} />}
